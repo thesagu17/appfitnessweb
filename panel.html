@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Panel de Bienestar</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="panel-body">
+  <header class="panel-header">
+    <h2 id="panelTitle">Bienvenido a tu Panel de Bienestar</h2>
+    <div class="sections">
+      <div class="section-box">Seguimiento de Progreso</div>
+      <div class="section-box">Planificación de Entrenamientos</div>
+      <div class="section-box">Nutrición y Dieta</div>
+      <div class="section-box">Recomendaciones Personalizadas</div>
+    </div>
+
+    <!-- Ícono de usuario -->
+    <div class="user-menu">
+      <div class="user-icon" id="userIcon">👤</div>
+      <div class="user-dropdown" id="userDropdown">
+        <p id="userEmail">usuario@ejemplo.com</p>
+        <hr>
+        <a href="#" id="logoutBtn">Cerrar sesión</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="panel-content">
+    <p class="lead">Aquí podrás gestionar tu bienestar integral.</p>
+  </main>
+
+  <script>
+    // Mostrar correo guardado
+    const userEmail = localStorage.getItem('usuario') || 'Invitado';
+    document.getElementById('userEmail').textContent = userEmail;
+
+    // Toggle del menú de usuario
+    const icon = document.getElementById('userIcon');
+    const dropdown = document.getElementById('userDropdown');
+
+    icon.addEventListener('click', () => {
+      dropdown.classList.toggle('show');
+    });
+
+    // Cerrar sesión
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('usuario');
+      window.location.href = 'index.html';
+    });
+  </script>
+</body>
+</html>
