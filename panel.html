@@ -9,46 +9,69 @@
 <body class="panel-body">
   <header class="panel-header">
     <h2 id="panelTitle">Bienvenido a tu Panel de Bienestar</h2>
-    <div class="sections">
-      <div class="section-box">Seguimiento de Progreso</div>
-      <div class="section-box">Planificación de Entrenamientos</div>
-      <div class="section-box">Nutrición y Dieta</div>
-      <div class="section-box">Recomendaciones Personalizadas</div>
-    </div>
+
+<div class="sections">
+  <div class="section-box" id="seguimientoProgreso">Seguimiento de Progreso</div>
+  <div class="section-box">Planificación de Entrenamientos</div>
+  <div class="section-box">Nutrición y Dieta</div>
+  <div class="section-box" id="registroActividadBtn">Registro de actividad</div>
+</div>
 
     <!-- Ícono de usuario -->
-    <div class="user-menu">
-      <div class="user-icon" id="userIcon">👤</div>
-      <div class="user-dropdown" id="userDropdown">
-        <p id="userEmail">usuario@ejemplo.com</p>
-        <hr>
-        <a href="#" id="logoutBtn">Cerrar sesión</a>
-      </div>
-    </div>
-  </header>
+<div class="user-menu">
+  <div class="user-icon" id="userIcon">👤</div>
+
+  <div class="user-dropdown" id="userDropdown">
+    <p id="userName"></p>
+    <p id="userEmail"></p>
+    <hr>
+    <a href="#" id="logoutBtn">Cerrar sesión</a>
+  </div>
+</div>
 
   <main class="panel-content">
     <p class="lead">Aquí podrás gestionar tu bienestar integral.</p>
   </main>
 
   <script>
-    // Mostrar correo guardado
-    const userEmail = localStorage.getItem('usuario') || 'Invitado';
-    document.getElementById('userEmail').textContent = userEmail;
+  document.addEventListener("DOMContentLoaded", () => {
+    // 🔐 Obtener usuario del localStorage
+    const user = JSON.parse(localStorage.getItem("usuario"));
+
+    // Si no hay sesión, redirigir
+    if (!user) {
+      window.location.href = "index.html";
+      return;
+    }
+
+    // ✅ Mostrar nombre y correo
+    document.getElementById("userName").textContent = user.nombre;
+    document.getElementById("userEmail").textContent = user.email;
 
     // Toggle del menú de usuario
-    const icon = document.getElementById('userIcon');
-    const dropdown = document.getElementById('userDropdown');
+    const icon = document.getElementById("userIcon");
+    const dropdown = document.getElementById("userDropdown");
 
-    icon.addEventListener('click', () => {
-      dropdown.classList.toggle('show');
+    icon.addEventListener("click", () => {
+      dropdown.classList.toggle("show");
     });
 
     // Cerrar sesión
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      localStorage.removeItem('usuario');
-      window.location.href = 'index.html';
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("usuario");
+      window.location.href = "index.html";
     });
-  </script>
+
+    // Navegación
+    document.getElementById("registroActividadBtn").addEventListener("click", () => {
+      window.location.href = "registro_actividad.html";
+    });
+
+    document.getElementById("seguimientoProgreso").addEventListener("click", () => {
+      window.location.href = "ver_actividades.html";
+    });
+  });
+</script>
+
 </body>
 </html>
