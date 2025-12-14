@@ -1,185 +1,77 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Panel de Bienestar</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Panel de Bienestar</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body class="panel-body">
   <header class="panel-header">
     <h2 id="panelTitle">Bienvenido a tu Panel de Bienestar</h2>
-    <div class="sections">
-      <div class="section-box">Seguimiento de Progreso</div>
-      <div class="section-box">Planificación de Entrenamientos</div>
-      <div class="section-box">Nutrición y Dieta</div>
-      <div class="section-box">Recomendaciones Personalizadas</div>
-    </div>
 
-    <!-- Menú de usuario -->
-    <div class="user-menu">
-      <div class="user-icon" id="userIcon">👤</div>
-      <div class="user-dropdown" id="userDropdown">
-        <p id="userEmail">usuario@ejemplo.com</p>
-        <hr>
-        <a href="#" id="editProfileBtn">Editar datos</a>
-        <a href="#" id="logoutBtn" style="color:#ef4444">Cerrar sesión</a>
-      </div>
-    </div>
-  </header>
+<div class="sections">
+  <div class="section-box" id="seguimientoProgreso">Seguimiento de Progreso</div>
+  <div class="section-box">Planificación de Entrenamientos</div>
+  <div class="section-box">Nutrición y Dieta</div>
+  <div class="section-box" id="registroActividadBtn">Registro de actividad</div>
+</div>
+
+    <!-- Ícono de usuario -->
+<div class="user-menu">
+  <div class="user-icon" id="userIcon">👤</div>
+
+  <div class="user-dropdown" id="userDropdown">
+    <p id="userName"></p>
+    <p id="userEmail"></p>
+    <hr>
+    <a href="#" id="logoutBtn">Cerrar sesión</a>
+  </div>
+</div>
 
   <main class="panel-content">
     <p class="lead">Aquí podrás gestionar tu bienestar integral.</p>
-    <div id="resumenUsuario" class="summary-box"></div>
   </main>
 
-  <!-- Modal de edición -->
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="modal">
-      <h3>Editar datos de fitness</h3>
-      <form id="editForm">
-        <label>Nombre
-          <input type="text" id="fNombre" required>
-        </label>
-
-        <label>Edad
-          <input type="number" id="fEdad" min="10" max="100">
-        </label>
-
-        <label>Peso (kg)
-          <input type="number" id="fPeso" step="0.1">
-        </label>
-
-        <label>Altura (cm)
-          <input type="number" id="fAltura" step="1">
-        </label>
-
-        <label>Objetivo
-          <input type="text" id="fObjetivo" placeholder="Bajar de peso, ganar masa, mantener...">
-        </label>
-
-        <label>Rutina
-          <textarea id="fRutina" rows="4"></textarea>
-        </label>
-
-        <label>Días entrenados esta semana
-          <input type="number" id="fDias" min="0" max="7">
-        </label>
-
-        <label>Calorías diarias
-          <input type="number" id="fCalorias" min="0">
-        </label>
-
-        <label>Agua (litros)
-          <input type="number" id="fAgua" step="0.1">
-        </label>
-
-        <div class="modal-actions">
-          <button type="button" id="cancelEdit" class="btn secondary">Cancelar</button>
-          <button type="submit" class="btn">Guardar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
   <script>
-    // Mostrar correo guardado
-    const userEmailStored = localStorage.getItem('usuario') || 'Invitado';
-    const emailElement = document.getElementById('userEmail');
-    emailElement.textContent = userEmailStored;
+  document.addEventListener("DOMContentLoaded", () => {
+    // 🔐 Obtener usuario del localStorage
+    const user = JSON.parse(localStorage.getItem("usuario"));
+
+    // Si no hay sesión, redirigir
+    if (!user) {
+      window.location.href = "index.html";
+      return;
+    }
+
+    // ✅ Mostrar nombre y correo
+    document.getElementById("userName").textContent = user.nombre;
+    document.getElementById("userEmail").textContent = user.email;
 
     // Toggle del menú de usuario
-    const icon = document.getElementById('userIcon');
-    const dropdown = document.getElementById('userDropdown');
+    const icon = document.getElementById("userIcon");
+    const dropdown = document.getElementById("userDropdown");
 
-    icon.addEventListener('click', () => {
-      dropdown.classList.toggle('show');
+    icon.addEventListener("click", () => {
+      dropdown.classList.toggle("show");
     });
 
     // Cerrar sesión
-    document.getElementById('logoutBtn').addEventListener('click', (e) => {
-      e.preventDefault();
-      localStorage.removeItem('usuario');
-      // si no quieres borrar el perfil, no lo borres
-      window.location.href = 'index.html';
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("usuario");
+      window.location.href = "index.html";
     });
 
-    // Función para pintar resumen
-    function pintarResumen(perfil) {
-      const box = document.getElementById('resumenUsuario');
-      if (!perfil) {
-        box.textContent = 'No hay datos de perfil. Inicia sesión de nuevo.';
-        return;
-      }
-
-      box.innerHTML = `
-        <h4>${perfil.nombre}</h4>
-        <p>Correo: ${perfil.email}</p>
-        <p>Edad: ${perfil.edad} años</p>
-        <p>Peso: ${perfil.pesoKg} kg</p>
-        <p>Altura: ${perfil.alturaCm} cm</p>
-        <p>Objetivo: ${perfil.objetivo}</p>
-        <p>Rutina:</p>
-        <pre class="rutina-box">${perfil.rutina}</pre>
-        <p>Progreso semanal: ${perfil.progreso.diasEntrenadosSemana} días entrenados</p>
-        <p>Calorías diarias: ${perfil.progreso.caloriasDiarias}</p>
-        <p>Agua: ${perfil.progreso.aguaLitros} L/día</p>
-      `;
-    }
-
-    // Cargar perfil desde localStorage
-    let perfilGuardado = localStorage.getItem('perfilFitness');
-    let perfil = perfilGuardado ? JSON.parse(perfilGuardado) : null;
-    pintarResumen(perfil);
-
-    // Modal
-    const modalOverlay = document.getElementById('modalOverlay');
-    const editBtn = document.getElementById('editProfileBtn');
-    const cancelBtn = document.getElementById('cancelEdit');
-
-    editBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const p = JSON.parse(localStorage.getItem('perfilFitness'));
-      if (!p) return;
-
-      document.getElementById('fNombre').value = p.nombre || '';
-      document.getElementById('fEdad').value = p.edad || '';
-      document.getElementById('fPeso').value = p.pesoKg || '';
-      document.getElementById('fAltura').value = p.alturaCm || '';
-      document.getElementById('fObjetivo').value = p.objetivo || '';
-      document.getElementById('fRutina').value = p.rutina || '';
-      document.getElementById('fDias').value = p.progreso.diasEntrenadosSemana || 0;
-      document.getElementById('fCalorias').value = p.progreso.caloriasDiarias || 0;
-      document.getElementById('fAgua').value = p.progreso.aguaLitros || 0;
-
-      modalOverlay.classList.add('show-modal');
+    // Navegación
+    document.getElementById("registroActividadBtn").addEventListener("click", () => {
+      window.location.href = "registro_actividad.html";
     });
 
-    cancelBtn.addEventListener('click', () => {
-      modalOverlay.classList.remove('show-modal');
+    document.getElementById("seguimientoProgreso").addEventListener("click", () => {
+      window.location.href = "ver_actividades.html";
     });
+  });
+</script>
 
-    // Guardar cambios del modal
-    document.getElementById('editForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const p = JSON.parse(localStorage.getItem('perfilFitness'));
-      if (!p) return;
-
-      p.nombre = document.getElementById('fNombre').value;
-      p.edad = Number(document.getElementById('fEdad').value) || p.edad;
-      p.pesoKg = Number(document.getElementById('fPeso').value) || p.pesoKg;
-      p.alturaCm = Number(document.getElementById('fAltura').value) || p.alturaCm;
-      p.objetivo = document.getElementById('fObjetivo').value;
-      p.rutina = document.getElementById('fRutina').value;
-
-      p.progreso.diasEntrenadosSemana = Number(document.getElementById('fDias').value) || 0;
-      p.progreso.caloriasDiarias = Number(document.getElementById('fCalorias').value) || 0;
-      p.progreso.aguaLitros = Number(document.getElementById('fAgua').value) || 0;
-
-      localStorage.setItem('perfilFitness', JSON.stringify(p));
-      pintarResumen(p);
-      modalOverlay.classList.remove('show-modal');
-    });
-  </script>
 </body>
 </html>
