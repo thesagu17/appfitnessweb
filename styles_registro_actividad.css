@@ -244,3 +244,41 @@ body {
   padding: 6px 0;
   border-bottom: 1px solid rgba(255,255,255,0.05);
 }
+.calorias-dia {
+  margin-top: 40px;
+  background: rgba(255,255,255,0.05);
+  padding: 25px;
+  border-radius: 12px;
+}
+
+.calorias-dia h3 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: #fff;
+}
+
+#tabla-calorias-dia {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+#tabla-calorias-dia th {
+  background: linear-gradient(135deg, #7b2ff7, #b312ff);
+  color: #fff;
+  padding: 12px;
+}
+
+#tabla-calorias-dia td {
+  padding: 12px;
+  text-align: center;
+  color: #333;
+  border-bottom: 1px solid #eee;
+}
+
+#tabla-calorias-dia tr:last-child td {
+  border-bottom: none;
+}
+
