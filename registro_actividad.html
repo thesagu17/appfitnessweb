@@ -1,144 +1,125 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fitness Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrar Actividad</title>
   <link rel="stylesheet" href="styles.css">
-  <script src="https://kit.fontawesome.com/a2e0e6b6a4.js" crossorigin="anonymous"></script>
 </head>
 <body>
-  <div class="dashboard-container">
-    <header class="header">
-      <h1><span>Hola,</span> Jane</h1>
-      <button class="profile-btn" aria-label="Ver perfil">
-        <i class="fa-solid fa-user"></i>
-      </button>
-    </header>
 
-    <main>
-      <section class="stats-grid">
-        <div class="stat-card">
-          <div class="card-header">
-            <div class="card-icon calories">
-              <i class="fa-solid fa-fire-flame-curved"></i>
-            </div>
-            <span class="card-title">Calorías</span>
-          </div>
-          <p class="card-value">1,872</p>
-          <div class="card-footer"><span class="success">+12%</span> que ayer</div>
-        </div>
+  <main class="card">
+    <h2>Registrar Actividad Física</h2>
 
-        <div class="stat-card">
-          <div class="card-header">
-            <div class="card-icon steps"><i class="fa-solid fa-shoe-prints"></i></div>
-            <span class="card-title">Pasos</span>
-          </div>
-          <p class="card-value">8,321</p>
-          <div class="card-footer">Meta: 10,000</div>
-        </div>
+    <form id="actividadForm">
 
-        <div class="stat-card">
-          <div class="card-header">
-            <div class="card-icon time"><i class="fa-solid fa-clock"></i></div>
-            <span class="card-title">Tiempo Activo</span>
-          </div>
-          <p class="card-value">1h 24m</p>
-          <div class="card-footer"><span class="success">+20m</span> que ayer</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="card-header">
-            <div class="card-icon heart"><i class="fa-solid fa-heart-pulse"></i></div>
-            <span class="card-title">Ritmo Cardíaco</span>
-          </div>
-          <p class="card-value">78 <small style="font-size:14px; color:var(--muted)">BPM</small></p>
-          <div class="card-footer">En reposo</div>
-        </div>
-      </section>
-
-      <section class="recent-activity">
-        <h2>Actividad Reciente</h2>
-        <div class="activity-item">
-          <div class="activity-details">
-            <div class="activity-icon"><i class="fa-solid fa-person-running"></i></div>
-            <div class="activity-info">
-              <p>Carrera Matutina</p>
-              <span class="time">Hoy a las 07:15 AM</span>
-            </div>
-          </div>
-          <div class="activity-value">5.2 km</div>
-        </div>
-
-        <div class="activity-item">
-          <div class="activity-details">
-            <div class="activity-icon"><i class="fa-solid fa-dumbbell"></i></div>
-            <div class="activity-info">
-              <p>Entrenamiento de Fuerza</p>
-              <span class="time">Ayer a las 06:30 PM</span>
-            </div>
-          </div>
-          <div class="activity-value">45 min</div>
-        </div>
-      </section>
-
-      <!-- Registro de entrenamiento -->
-      <div class="registro1">
-        <section id="training-log" class="feature-card">
-          <h2>Registro de Entrenamiento 💪</h2>
-          <p>Añade los ejercicios que realizaste hoy.</p>
-
-          <div class="input-group">
-            <label for="exercise-name">Nombre del Ejercicio:</label>
-            <input type="text" id="exercise-name" placeholder="Ej: Sentadillas, Correr" required />
-          </div>
-
-          <div class="input-group">
-            <label for="exercise-duration">Duración (minutos):</label>
-            <input type="number" id="exercise-duration" min="1" step="1" placeholder="Ej: 30" required />
-          </div>
-
-          <div class="input-group">
-            <label for="exercise-calories">Calorías Estimadas (kcal):</label>
-            <input type="number" id="exercise-calories" min="1" step="1" placeholder="Ej: 250" required />
-          </div>
-
-          <button onclick="addExercise()">Registrar Ejercicio</button>
-
-          <div class="result-display">
-            <h3>Entrenamientos Registrados:</h3>
-            <ul id="exercise-list"></ul>
-          </div>
-        </section>
+      <div class="row">
+        <label for="type_id">Tipo de actividad</label>
+        <select id="type_id" class="input">
+          <option value="">Cargando actividades...</option>
+        </select>
       </div>
-    </main>
-  </div>
 
+      <div class="row">
+        <label for="nombre">Nombre de la actividad</label>
+        <input type="text" id="nombre" class="input" placeholder="Ejemplo: Trote, Sentadillas" required>
+      </div>
+
+      <div class="row">
+        <label for="duracion_min">Duración (minutos)</label>
+        <input type="number" id="duracion_min" class="input" min="1" required>
+      </div>
+
+      <div class="row">
+        <label for="calorias">Calorías quemadas (opcional)</label>
+        <input type="number" id="calorias" class="input" min="0">
+      </div>
+
+      <button type="submit" class="btn">Guardar Actividad</button>
+
+      <p id="msg"></p>
+
+    </form>
+
+    <br>
+    <a href="panel.html" class="btn">⬅ Volver al Panel</a>
+
+  </main>
+
+  <!-- ===================================== -->
+  <!--  SCRIPT PARA CARGAR ACTIVIDADES DINÁMICAMENTE -->
+  <!-- ===================================== -->
   <script>
-    const profileButton = document.querySelector('.profile-btn');
-    profileButton.addEventListener('click', () => {
-      alert('Navegando a la página de perfil...');
-    });
+    async function cargarActividades() {
+      const select = document.getElementById("type_id");
 
-    function addExercise() {
-      const name = document.getElementById('exercise-name').value.trim();
-      const duration = document.getElementById('exercise-duration').value;
-      const calories = document.getElementById('exercise-calories').value;
+      try {
+        const res = await fetch("/api/tipo-actividades");
+        const data = await res.json();
 
-      if (!name || !duration || !calories) {
-        alert('Por favor, completa todos los campos.');
+        select.innerHTML = '<option value="">Seleccione...</option>';
+
+        data.forEach(act => {
+          const option = document.createElement("option");
+          option.value = act.type_id;
+          option.textContent = act.nombre;
+          select.appendChild(option);
+        });
+
+      } catch (err) {
+        console.error(err);
+        select.innerHTML = '<option value="">Error al cargar actividades</option>';
+      }
+    }
+
+    // Ejecutar al cargar página
+    cargarActividades();
+  </script>
+
+  <!-- ===================================== -->
+  <!-- SCRIPT PARA GUARDAR ACTIVIDAD -->
+  <!-- ===================================== -->
+  <script>
+    document.getElementById("actividadForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const msg = document.getElementById("msg");
+
+      const type_id = document.getElementById("type_id").value || null;
+      const nombre = document.getElementById("nombre").value;
+      const duracion_min = document.getElementById("duracion_min").value;
+      const calorias = document.getElementById("calorias").value || null;
+
+      // Obtener USER_ID desde el login
+      const user = JSON.parse(localStorage.getItem("usuario"));
+      if (!user) {
+        msg.textContent = "Debes iniciar sesión.";
+        msg.style.color = "red";
         return;
       }
 
-      const li = document.createElement('li');
-      li.textContent = `${name} — ${duration} min — ${calories} kcal`;
-      document.getElementById('exercise-list').appendChild(li);
+      const user_id = user.user_id;
 
-      // Limpia los campos
-      document.getElementById('exercise-name').value = '';
-      document.getElementById('exercise-duration').value = '';
-      document.getElementById('exercise-calories').value = '';
-    }
+      const res = await fetch("/registrar-actividad", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id, type_id, nombre, duracion_min, calorias })
+      });
+
+      const data = await res.json();
+
+      if (data.error) {
+        msg.textContent = data.error;
+        msg.style.color = "red";
+        return;
+      }
+
+      msg.textContent = "Actividad registrada correctamente";
+      msg.style.color = "green";
+
+      document.getElementById("actividadForm").reset();
+    });
   </script>
+
 </body>
 </html>
