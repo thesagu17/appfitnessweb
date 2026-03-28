@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrar Actividad</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <main class="card">
+    <h2>Registrar Actividad Física</h2>
+
+    <form id="actividadForm">
+
+      <div class="row">
+        <label for="type_id">Tipo de actividad</label>
+        <select id="type_id" class="input">
+          <option value="">Cargando actividades...</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="nombre">Nombre de la actividad</label>
+        <input type="text" id="nombre" class="input" placeholder="Ejemplo: Trote, Sentadillas" required>
+      </div>
+
+      <div class="row">
+        <label for="duracion_min">Duración (minutos)</label>
+        <input type="number" id="duracion_min" class="input" min="1" required>
+      </div>
+
+      <div class="row">
+        <label for="calorias">Calorías quemadas (opcional)</label>
+        <input type="number" id="calorias" class="input" min="0">
+      </div>
+
+      <button type="submit" class="btn">Guardar Actividad</button>
+
+      <p id="msg"></p>
+
+    </form>
+
+    <br>
+    <a href="panel.html" class="btn">⬅ Volver al Panel</a>
+
+  </main>
+
+  <!-- ===================================== -->
+  <!--  SCRIPT PARA CARGAR ACTIVIDADES DINÁMICAMENTE -->
+  <!-- ===================================== -->
+  <script>
+    async function cargarActividades() {
+      const select = document.getElementById("type_id");
+
+      try {
+        const res = await fetch("/api/tipo-actividades");
+        const data = await res.json();
+
+        select.innerHTML = '<option value="">Seleccione...</option>';
+
+        data.forEach(act => {
+          const option = document.createElement("option");
+          option.value = act.type_id;
+          option.textContent = act.nombre;
+          select.appendChild(option);
+        });
+
+      } catch (err) {
+        console.error(err);
+        select.innerHTML = '<option value="">Error al cargar actividades</option>';
+      }
+    }
+
+    // Ejecutar al cargar página
+    cargarActividades();
+  </script>
+
+  <!-- ===================================== -->
+  <!-- SCRIPT PARA GUARDAR ACTIVIDAD -->
+  <!-- ===================================== -->
+  <script>
+    document.getElementById("actividadForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const msg = document.getElementById("msg");
+
+      const type_id = document.getElementById("type_id").value || null;
+      const nombre = document.getElementById("nombre").value;
+      const duracion_min = document.getElementById("duracion_min").value;
+      const calorias = document.getElementById("calorias").value || null;
+
+      // Obtener USER_ID desde el login
+      const user = JSON.parse(localStorage.getItem("usuario"));
+      if (!user) {
+        msg.textContent = "Debes iniciar sesión.";
+        msg.style.color = "red";
+        return;
+      }
+
+      const user_id = user.user_id;
+
+      const res = await fetch("/registrar-actividad", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id, type_id, nombre, duracion_min, calorias })
+      });
+
+      const data = await res.json();
+
+      if (data.error) {
+        msg.textContent = data.error;
+        msg.style.color = "red";
+        return;
+      }
+
+      msg.textContent = "Actividad registrada correctamente";
+      msg.style.color = "green";
+
+      document.getElementById("actividadForm").reset();
+    });
+  </script>
+
+</body>
+</html>
